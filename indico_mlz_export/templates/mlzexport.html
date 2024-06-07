@@ -1,0 +1,24 @@
+{% from 'forms/_form.html' import form_header, form_fieldset, form_footer, form_rows %}
+{% extends 'events/management/base.html' %}
+
+{% block title %}
+    {% trans %}FZJ export{% endtrans %}
+{% endblock %}
+
+
+{% block description %}
+    {% trans -%}
+        FZJ export
+    {%- endtrans %}
+{% endblock %}
+
+
+{% block content %}
+{{ form_header(form, id='print_checkin-form', multipart=true) }}
+{{ form_rows(form) }}
+
+{% call form_footer(form) %}
+    <input class="i-button big highlight" type="submit" value="{% trans %}Export{% endtrans %}" />
+{% endcall %}
+
+{% endblock %}

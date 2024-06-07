@@ -26,12 +26,17 @@
 
 from __future__ import unicode_literals
 
+from csv import DictReader
+
 from flask import jsonify, request, session
 from werkzeug.exceptions import Forbidden
 
 from indico.modules.events.models.events import Event
-from indico.web.rh import RH,oauth_scope
-from indico_mlz_export.api import all_registrations, one_registration, all_registrations_csv
+from indico.web.rh import RH, oauth_scope
+from indico_mlz_export.api import all_registrations, one_registration, all_registrations_csv, registrations_csv
+from indico_mlz_export.views import WPMLZExportEventMgmt
+from indico_mlz_export.forms import ExportForm
+
 
 @oauth_scope('registrants')
 class RHMLZExportBase(RH):
@@ -69,7 +74,19 @@ class RHExportRegistrationsFZJ(RHMLZExportBase):
         self.event = Event.get(self.event_id, is_deleted=False)
 
     def _process_GET(self):
-        return all_registrations_csv(self.event)
+        return WPMLZExportEventMgmt.render_template('mlzexport.html', self.event, form=ExportForm())
+
+    def _process_POST(self):
+        export_form = ExportForm()
+        if export_form.validate_on_submit():
+            file_data = export_form.sap_export.data
+            if file_data:
+                csv_content = request.files[export_form.sap_export.name].read()
+                reader = DictReader(csv_content.decode('utf-8').split('\n'), delimiter=';', quotechar='"')
+                mails = [entry['mail'] for entry in list(reader) if 'mail' in entry]
+                return registrations_csv(self.event, exclude=mails)
+            return all_registrations_csv(self.event)
+
 
 class RHExportRegistrationsFlat(RHExportRegistrations):
     FLAT = True

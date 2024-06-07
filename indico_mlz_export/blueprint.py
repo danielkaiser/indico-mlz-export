@@ -35,7 +35,7 @@ blueprint = IndicoPluginBlueprint('mlz_export', __name__, url_prefix='/mlz/expor
 blueprint.add_url_rule(
     '/<int:event_id>/registrants/<int:registrant_id>', 'api_registrant', RHExportRegistration, methods=('GET', ))
 blueprint.add_url_rule('/<int:event_id>/registrants', 'api_registrants', RHExportRegistrations)
-blueprint.add_url_rule('/<int:event_id>/registrants_fzj', 'api_registrants_fzj', RHExportRegistrationsFZJ)
+blueprint.add_url_rule('/<int:event_id>/registrants_fzj', 'api_registrants_fzj', RHExportRegistrationsFZJ, methods=('GET', 'POST'))
 blueprint.add_url_rule(
     '/<int:event_id>/registrants_flat/<int:registrant_id>',
     'api_registrant_flat',

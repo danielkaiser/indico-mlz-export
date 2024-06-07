@@ -29,7 +29,8 @@ from indico_mlz_export.views import WPMLZExportEventMgmt
 
 
 class RHMLZExportManageEvent(RHManageEventBase):
-    EVENT_FEATURE='fzjexport'
+    EVENT_FEATURE = 'fzjexport'
+
     def _process(self):
         form = EventSettingsForm(
             prefix='mlzexport-',

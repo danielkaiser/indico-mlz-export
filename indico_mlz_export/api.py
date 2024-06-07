@@ -105,7 +105,7 @@ def all_registrations(event, flat):
     return result
 
 
-def all_registrations_csv(event):
+def registrations_csv(event, exclude=None):
     an = {'male': 'Mr.', 'female': 'Mrs.', 'divers': ''}
     result = []
     _registrations = (event.registrations.filter_by(is_deleted=False, is_active=True).options(
@@ -160,10 +160,16 @@ def all_registrations_csv(event):
         data['betrag'] = f'{registration.get('ticket_price', 0):.2f}'.replace('.', ',') if data['teilnehmer_intern'] == '0' else ''
         data['zahlweise'] = 'K' if 'Credit Card' in rdata.get('paymentoption', '') else 'U'
         data['rechnungsnummer'] = ''
+        if exclude and data['mail'] in exclude:
+            continue
         result.append(data)
     if result:
         return to_csv(result)
     return None
+
+
+def all_registrations_csv(event):
+    return registrations_csv(event)
 
 
 def one_registration(event, registrant_id, flat):
