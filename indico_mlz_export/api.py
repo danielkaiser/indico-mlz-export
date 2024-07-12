@@ -116,7 +116,8 @@ def registrations_csv(event, exclude=None):
         reg_data = _registration.data_by_field
         rdata = {}
         for section in _registration.sections_with_answered_fields:
-            for field in section.active_fields:
+            fields = section.active_fields if hasattr(section, 'active_fields') else section.fields
+            for field in fields:
                 if field.id not in reg_data:
                     continue
                 ft = ft_to_logickey(field.title)
