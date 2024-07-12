@@ -161,6 +161,9 @@ def registrations_csv(event, exclude=None):
         data['betrag'] = f'{registration.get('ticket_price', 0):.2f}'.replace('.', ',') if data['teilnehmer_intern'] == '0' else ''
         data['zahlweise'] = 'K' if 'Credit Card' in rdata.get('paymentoption', '') else 'U'
         data['rechnungsnummer'] = ''
+        for key in data:
+            if '\n' in data[key]:
+                data[key] = data[key].replace('\n', ' ')
         if exclude and data['mail'] in exclude:
             continue
         result.append(data)
