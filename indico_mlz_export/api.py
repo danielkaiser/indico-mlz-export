@@ -162,7 +162,7 @@ def registrations_csv(event, exclude=None):
         data['zahlweise'] = 'K' if 'Credit Card' in rdata.get('paymentoption', '') else 'U'
         data['rechnungsnummer'] = ''
         for key in data:
-            if '\n' in data[key]:
+            if data[key] and '\n' in data[key]:
                 data[key] = data[key].replace('\n', ' ')
         if exclude and data['mail'] in exclude:
             continue
